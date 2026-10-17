@@ -96,5 +96,24 @@ services:
       - backend-net
       - frontend-net
 
-volumes:
-  mysql_data:
+  loki:
+    image: grafana/loki:2.8.2
+    container_name: bds-loki
+    restart: always
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki/loki-config.yml:/etc/loki/loki-config.yml:ro
+    networks:
+      - backend-net
+
+  promtail:
+    image: grafana/promtail:2.8.2
+    container_name: bds-promtail
+    restart: always
+    volumes:
+      - ./promtail/promtail-config.yml:/etc/promtail/promtail-config.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    networks:
+      - backend-net

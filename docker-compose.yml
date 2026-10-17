@@ -117,3 +117,6 @@ services:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
     networks:
       - backend-net
+
+volumes:
+  mysql_data:

@@ -61,5 +61,40 @@ services:
     networks:
       - frontend-net
 
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: bds-prometheus
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks:
+      - backend-net
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.0
+    container_name: bds-cadvisor
+    restart: always
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - backend-net
+
+  grafana:
+    image: grafana/grafana:10.0.0
+    container_name: bds-grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=GrafanaAdminPass2026!
+    networks:
+      - backend-net
+      - frontend-net
+
 volumes:
   mysql_data:
